@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @RequestMapping("/barcodegenerator/**")
 @Controller
-public class BarcodeGenerator {
+public class BarcodeGeneratorController {
 
     @RequestMapping(method = RequestMethod.POST, value = "{id}")
     public void post(@PathVariable Long id, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
