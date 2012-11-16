@@ -21,7 +21,8 @@ import si.kcclass.barcodegenerator.util.BarcodeTypes;
 @Controller
 public class BarcodeGeneratorController {
 	
-	private @Autowired ServletContext servletContext;
+	@Autowired
+	private ServletContext servletContext;
 	
     /*@RequestMapping(value="generate/{barcodeType}/{barcodeValue}", method = RequestMethod.GET)
     public void generate(@PathVariable String barcodeType,

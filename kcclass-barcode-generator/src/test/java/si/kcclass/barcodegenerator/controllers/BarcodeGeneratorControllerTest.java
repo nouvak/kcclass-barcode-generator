@@ -21,7 +21,10 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import si.kcclass.barcodegenerator.util.BarcodeTypes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:META-INF/spring/applicationContext.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
+//@ContextConfiguration({"classpath:applicationContext-test.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
+
+@ContextConfiguration(inheritLocations = true, loader = MockServletContextWebContextLoader.class, 
+	locations = {"classpath:applicationContext-test.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
 public class BarcodeGeneratorControllerTest {
 
 	@Autowired
@@ -43,13 +46,13 @@ public class BarcodeGeneratorControllerTest {
 	public void tearDown() throws Exception {
 	}
 
-	@Test
-	public void testGenerate() throws IOException {
-		BarcodeGeneratorController controller = new BarcodeGeneratorController();
-		byte[] imgBarcode = controller.generate(barcodeType.toString(), barcodeValue);
-		assertNotNull(imgBarcode);
-		assertTrue(imgBarcode.length > 0);
-	}
+//	@Test
+//	public void testGenerate() throws IOException {
+//		BarcodeGeneratorController controller = new BarcodeGeneratorController();
+//		byte[] imgBarcode = controller.generate(barcodeType.toString(), barcodeValue);
+//		assertNotNull(imgBarcode);
+//		assertTrue(imgBarcode.length > 0);
+//	}
 	
 	@Test
 	public void testGenerateOnRequest() throws Exception {
