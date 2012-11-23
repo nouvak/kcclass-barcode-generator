@@ -36,7 +36,9 @@ public class BarcodeGeneratorController {
         response.setContentType("image/jpeg");
         response.setHeader("Content-Disposition", "attachment; filename=\"barcode-" + 
         		barcodeValue + ".jpg\"");
-        return IOUtils.toByteArray(in);
+        byte[] imgBytes = IOUtils.toByteArray(in);
+        tmpImgBarcode.delete();
+        return imgBytes;
     }
 
 }
