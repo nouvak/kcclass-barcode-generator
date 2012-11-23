@@ -1,6 +1,7 @@
 package si.kcclass.barcodegenerator.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ import org.junit.Test;
 public class BarcodeGeneratorTest {
 	
 	List<File> imgBarcodes;
+	
+	String strBarcode = "123456";
+	String strBarcodeEAN8UPCE = "1234567";
+	String strBarcodeEAN13UPCA = "123456789012";
 
 	@Before
 	public void setUp() throws Exception {
@@ -28,9 +33,6 @@ public class BarcodeGeneratorTest {
 
 	@Test
 	public void testGenerate() {
-		String strBarcode = "123456";
-		String strBarcodeEAN8UPCE = "1234567";
-		String strBarcodeEAN13UPCA = "123456789012";
 		File imgBarcode;
 		
 		BarcodeGenerator generator = new BarcodeGenerator(System.getProperty("user.dir"));
@@ -58,7 +60,7 @@ public class BarcodeGeneratorTest {
 		assertNotNull(imgBarcodes);
 		imgBarcodes.add(imgBarcode);
 
-		imgBarcode = generator.generate(BarcodeTypes.CODE128, strBarcode);
+		imgBarcode = generator.generate(BarcodeTypes.EAN128, strBarcodeEAN13UPCA);
 		assertNotNull(imgBarcodes);
 		imgBarcodes.add(imgBarcode);
 
@@ -70,5 +72,20 @@ public class BarcodeGeneratorTest {
 		assertNotNull(imgBarcodes);
 		imgBarcodes.add(imgBarcode);
 	}
+	
+	@Test
+	public void testUndefinedBarcodeType() {
+		BarcodeGenerator generator = new BarcodeGenerator(System.getProperty("user.dir"));
+		File imgBarcode = generator.generate(BarcodeTypes.UNKNOWN, null);
+		assertNull(imgBarcode);
+	}
+	
+	@Test
+	public void testBarcodeGenerationFailure() {
+		BarcodeGenerator generator = new BarcodeGenerator(System.getProperty("user.dir"));
+		File imgBarcode = generator.generate(BarcodeTypes.CODE39, null);
+		assertNull(imgBarcode);
+	}
+	
 
 }
