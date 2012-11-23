@@ -1,9 +1,5 @@
 package si.kcclass.barcodegenerator.controllers;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,8 +41,7 @@ public class BarcodeGeneratorControllerTest {
 	}
 	
 	@Test
-	public void testGenerateOnRequest() throws Exception {
-		//String realPath = "file:/home/marko/eclipse-workspaces/sts-workspace/kcclass-barcode-generator/kcclass-barcode-generator/src/main/webapp";  
+	public void testGenerateOnRequest() throws Exception {  
 		String realPath = "file:" + System.getProperty("user.dir") + "/src/main/webapp";
         MockServletContext context = new MockServletContext(realPath);
 		MockHttpServletRequest request = new MockHttpServletRequest(
@@ -60,4 +55,18 @@ public class BarcodeGeneratorControllerTest {
         Assert.assertNotNull(response);
 	}
 
+	@Test
+	public void testGenerateAsFileOnRequest() throws Exception {  
+		String realPath = "file:" + System.getProperty("user.dir") + "/src/main/webapp";
+        MockServletContext context = new MockServletContext(realPath);
+		MockHttpServletRequest request = new MockHttpServletRequest(
+				context,
+				"GET", "/barcodegenerator/generate-as-file/" + barcodeType + 
+				"/" + barcodeValue);
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		Object handler = handlerMapping.getHandler(request).getHandler();
+		ModelAndView mav = handlerAdapter.handle(request, response, handler);
+        Assert.assertNull(mav);
+        Assert.assertNotNull(response);
+	}
 }

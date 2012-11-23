@@ -21,24 +21,42 @@ import si.kcclass.barcodegenerator.util.BarcodeTypes;
 @RequestMapping("/barcodegenerator/**")
 @Controller
 public class BarcodeGeneratorController {
+	
+	private byte[] generateBarcodeImage(String barcodeType, String barcodeValue,
+			ServletContext servletContext) throws IOException {
+    	BarcodeTypes type = BarcodeTypes.valueOf(barcodeType);
+    	String tempDir = servletContext.getRealPath("/temp");
+    	/* generate the barcode image. */
+    	BarcodeGenerator generator = new BarcodeGenerator(tempDir);
+    	File tmpImgBarcode = generator.generate(type, barcodeValue);
+        InputStream imageStream = servletContext.getResourceAsStream("/temp/" + tmpImgBarcode.getName());
+        /* send image to the client. */
+        byte[] imageBytes = IOUtils.toByteArray(imageStream);
+        tmpImgBarcode.delete();
+        return imageBytes;		
+	}
 		    
 	@RequestMapping(value="generate/{barcodeType}/{barcodeValue}", method = RequestMethod.GET)
     public @ResponseBody byte[] generate(@PathVariable String barcodeType,
     		@PathVariable String barcodeValue,
     		HttpServletRequest request,
     		HttpServletResponse response) throws IOException {
-    	BarcodeTypes type = BarcodeTypes.valueOf(barcodeType);
-    	ServletContext servletContext = request.getSession().getServletContext();
-    	String tempDir = servletContext.getRealPath("/temp");
-    	BarcodeGenerator generator = new BarcodeGenerator(tempDir);
-    	File tmpImgBarcode = generator.generate(type, barcodeValue);
-        InputStream in = servletContext.getResourceAsStream("/temp/" + tmpImgBarcode.getName());
+		ServletContext servletContext = request.getSession().getServletContext();
+		byte[] imageBytes = generateBarcodeImage(barcodeType, barcodeValue, servletContext);
+        return imageBytes;
+    }
+	
+	@RequestMapping(value="generate-as-file/{barcodeType}/{barcodeValue}", method = RequestMethod.GET)
+    public void generateAsFile(@PathVariable String barcodeType,
+    		@PathVariable String barcodeValue,
+    		HttpServletRequest request,
+    		HttpServletResponse response) throws IOException {
+		ServletContext servletContext = request.getSession().getServletContext();
+		byte[] imageBytes = generateBarcodeImage(barcodeType, barcodeValue, servletContext);		
         response.setContentType("image/jpeg");
         response.setHeader("Content-Disposition", "attachment; filename=\"barcode-" + 
         		barcodeValue + ".jpg\"");
-        byte[] imgBytes = IOUtils.toByteArray(in);
-        tmpImgBarcode.delete();
-        return imgBytes;
+        response.getOutputStream().write(imageBytes);
+        response.getOutputStream().close();
     }
-
 }
