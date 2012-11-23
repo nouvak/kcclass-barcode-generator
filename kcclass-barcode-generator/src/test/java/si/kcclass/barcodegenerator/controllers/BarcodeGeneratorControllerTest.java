@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,10 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import si.kcclass.barcodegenerator.util.BarcodeTypes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration({"classpath:applicationContext-test.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
-
-@ContextConfiguration(inheritLocations = true, loader = MockServletContextWebContextLoader.class, 
-	locations = {"classpath:applicationContext-test.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
+@ContextConfiguration({"classpath:applicationContext-test.xml", "file:src/main/webapp/WEB-INF/spring/webmvc-config-test.xml"})
 public class BarcodeGeneratorControllerTest {
 
 	@Autowired
@@ -45,18 +43,14 @@ public class BarcodeGeneratorControllerTest {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-//	@Test
-//	public void testGenerate() throws IOException {
-//		BarcodeGeneratorController controller = new BarcodeGeneratorController();
-//		byte[] imgBarcode = controller.generate(barcodeType.toString(), barcodeValue);
-//		assertNotNull(imgBarcode);
-//		assertTrue(imgBarcode.length > 0);
-//	}
 	
 	@Test
 	public void testGenerateOnRequest() throws Exception {
+		//String realPath = "file:/home/marko/eclipse-workspaces/sts-workspace/kcclass-barcode-generator/kcclass-barcode-generator/src/main/webapp";  
+		String realPath = "file:" + System.getProperty("user.dir") + "/src/main/webapp";
+        MockServletContext context = new MockServletContext(realPath);
 		MockHttpServletRequest request = new MockHttpServletRequest(
+				context,
 				"GET", "/barcodegenerator/generate/" + barcodeType + 
 				"/" + barcodeValue);
 		MockHttpServletResponse response = new MockHttpServletResponse();
